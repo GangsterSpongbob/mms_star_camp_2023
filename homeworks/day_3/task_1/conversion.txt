@@ -1,0 +1,13 @@
+Let's take the number 145
+In Decimal: 1 4 5
+            1 * 10 ^ 2 + 4 * 10 ^ 1 + 5 * 10 ^ 0
+
+In Binary: 0 1 0 1 0 0 0 1
+		   1 * 2 ^ 6 + 1 * 2 ^ 4 + 1 * 2 ^ 0	
+		   Note: Signed variable would be 1 1 0 1 0 0 0 1
+
+In Octal: 2 2 1
+		  2 * 8 ^ 2 + 2 * 8 ^ 1 + 1 * 8 ^ 0
+
+In Hexadecimal: 9 1
+		        9 * 16 ^ 1 + 1 * 16 ^ 0
