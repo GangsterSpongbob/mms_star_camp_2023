@@ -62,10 +62,7 @@ void print_linked_list(linked_list *ll)
         print_data(current_node->cur_data);
         current_node = current_node->next;
     } while (current_node != ll->head);
-    // for (; current_node->next != ll->head; current_node = current_node->next)
-    // {
-    //     print_data(current_node->cur_data);
-    // }
+
     printf("\n");
 }
 
@@ -104,82 +101,24 @@ void push_front(data *new_element, linked_list *ll)
 
     new_head->cur_data = new_element;
 
-    if (ll->head == NULL && ll->tail == NULL)
+    if (ll->tail == NULL)
     {
         new_head->next = new_head;
         new_head->previous = new_head;
+        ll->tail = new_head;
     }
     else
     {
         new_head->next = ll->head;
         new_head->previous = ll->tail;
+        ll->head->previous = new_head;
+        ll->tail->next = new_head;
     }
 
     ll->head = new_head;
-
-    if (ll->tail == NULL)
-    {
-        ll->tail = new_head;
-    }
 }
 
 data *pop_front(linked_list *ll)
-{
-    if (ll->head == NULL)
-    {
-        perror("Cannot pop from empty linked list\n");
-        exit(-1);
-    }
-
-    data *temp_data = ll->head->cur_data;
-
-    if (ll->head == ll->head->next)
-    {
-        free(ll->head);
-        ll->head = NULL;
-        ll->tail = NULL;
-    }
-    else
-    {
-        node *second_node = ll->head->next;
-        free(ll->head);
-        ll->head = second_node;
-    }
-
-    return temp_data;
-}
-
-void push_back(data *new_element, linked_list *ll)
-{
-    node *new_tail = malloc(sizeof(node));
-    if (new_tail == NULL)
-    {
-        perror("Error during dynamic data allocation\n");
-        exit(-1);
-    }
-
-    new_tail->cur_data = new_element;
-
-    if (ll->head == NULL && ll->tail == NULL)
-    {
-        new_tail->next = new_tail;
-        new_tail->previous = new_tail;
-    }
-    else
-    {
-        new_tail->next = ll->head;
-        new_tail->previous = ll->tail;
-    }
-
-    ll->tail = new_tail;
-
-    if (ll->head == NULL)
-    {
-        ll->head = new_tail;
-    }
-}
-
-data *pop_back(linked_list *ll)
 {
     if (ll->head == NULL)
     {
@@ -197,9 +136,67 @@ data *pop_back(linked_list *ll)
     }
     else
     {
+        node *second_node = ll->head->next;
+        free(ll->head);
+        ll->head = second_node;
+        ll->head->previous = ll->tail;
+        ll->tail->next = ll->head;
+    }
+
+    return temp_data;
+}
+
+void push_back(data *new_element, linked_list *ll)
+{
+    node *new_tail = malloc(sizeof(node));
+    if (new_tail == NULL)
+    {
+        perror("Error during dynamic data allocation\n");
+        exit(-1);
+    }
+
+    new_tail->cur_data = new_element;
+
+    if (ll->head == NULL)
+    {
+        new_tail->previous = new_tail;
+        new_tail->next = new_tail;
+        ll->head = new_tail;
+    }
+    else
+    {
+        new_tail->previous = ll->tail;
+        new_tail->next = ll->head;
+        ll->tail->next = new_tail;
+        ll->head->previous = new_tail;
+    }
+
+    ll->tail = new_tail;
+}
+
+data *pop_back(linked_list *ll)
+{
+    if (ll->head == NULL)
+    {
+        perror("Cannot pop from empty linked list\n");
+        exit(-1);
+    }
+
+    data *temp_data = ll->tail->cur_data;
+
+    if (ll->tail->previous == ll->tail)
+    {
+        free(ll->tail);
+        ll->head = NULL;
+        ll->tail = NULL;
+    }
+    else
+    {
         node *second_to_last_node = ll->tail->previous;
         free(ll->tail);
         ll->tail = second_to_last_node;
+        ll->tail->next = ll->head;
+        ll->head->previous = ll->tail;
     }
 
     return temp_data;

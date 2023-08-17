@@ -1,4 +1,4 @@
-#include "single_link.h"
+#include "double_loop.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,11 +50,19 @@ void print_data(data *cur_data)
 
 void print_linked_list(linked_list *ll)
 {
+    if (ll->head == NULL || ll->tail == NULL)
+    {
+        printf("Empty list\n");
+        return;
+    }
+
     node *current_node = ll->head;
-    for (; current_node != NULL; current_node = current_node->next)
+    do
     {
         print_data(current_node->cur_data);
-    }
+        current_node = current_node->next;
+    } while (current_node != ll->head);
+
     printf("\n");
 }
 
@@ -92,13 +100,22 @@ void push_front(data *new_element, linked_list *ll)
     }
 
     new_head->cur_data = new_element;
-    new_head->next = ll->head;
-    ll->head = new_head;
 
     if (ll->tail == NULL)
     {
+        new_head->next = new_head;
+        new_head->previous = new_head;
         ll->tail = new_head;
     }
+    else
+    {
+        new_head->next = ll->head;
+        new_head->previous = ll->tail;
+        ll->head->previous = new_head;
+        ll->tail->next = new_head;
+    }
+
+    ll->head = new_head;
 }
 
 data *pop_front(linked_list *ll)
@@ -111,13 +128,19 @@ data *pop_front(linked_list *ll)
 
     data *temp_data = ll->head->cur_data;
 
-    node *second_node = ll->head->next;
-    free(ll->head);
-    ll->head = second_node;
-
-    if (ll->head == NULL)
+    if (ll->head->next == ll->head)
     {
+        free(ll->head);
+        ll->head = NULL;
         ll->tail = NULL;
+    }
+    else
+    {
+        node *second_node = ll->head->next;
+        free(ll->head);
+        ll->head = second_node;
+        ll->head->previous = ll->tail;
+        ll->tail->next = ll->head;
     }
 
     return temp_data;
@@ -133,18 +156,22 @@ void push_back(data *new_element, linked_list *ll)
     }
 
     new_tail->cur_data = new_element;
-    new_tail->next = NULL;
 
     if (ll->head == NULL)
     {
+        new_tail->previous = new_tail;
+        new_tail->next = new_tail;
         ll->head = new_tail;
-        ll->tail = new_tail;
     }
     else
     {
+        new_tail->previous = ll->tail;
+        new_tail->next = ll->head;
         ll->tail->next = new_tail;
-        ll->tail = ll->tail->next;
+        ll->head->previous = new_tail;
     }
+
+    ll->tail = new_tail;
 }
 
 data *pop_back(linked_list *ll)
@@ -155,25 +182,22 @@ data *pop_back(linked_list *ll)
         exit(-1);
     }
 
-    if (ll->head->next == NULL)
+    data *temp_data = ll->tail->cur_data;
+
+    if (ll->tail->previous == ll->tail)
     {
-        data *res_data = ll->head->cur_data;
-        free(ll->head);
+        free(ll->tail);
         ll->head = NULL;
         ll->tail = NULL;
-        return res_data;
     }
-
-    node *current_node = ll->head;
-    while (current_node->next->next != NULL)
+    else
     {
-        current_node = current_node->next;
+        node *second_to_last_node = ll->tail->previous;
+        free(ll->tail);
+        ll->tail = second_to_last_node;
+        ll->tail->next = ll->head;
+        ll->head->previous = ll->tail;
     }
 
-    data *res_data = ll->head->cur_data;
-    free(current_node->next);
-    current_node->next = NULL;
-    ll->tail = current_node;
-
-    return res_data;
+    return temp_data;
 }
