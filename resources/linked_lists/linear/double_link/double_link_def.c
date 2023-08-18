@@ -134,6 +134,10 @@ data *pop_front(linked_list *ll)
     {
         ll->tail = NULL;
     }
+    else
+    {
+        ll->head->previous = NULL;
+    }
 
     return temp_data;
 }
@@ -180,6 +184,10 @@ data *pop_back(linked_list *ll)
     if (ll->tail == NULL)
     {
         ll->tail = NULL;
+    }
+    else
+    {
+        ll->tail->next = NULL;
     }
 
     return temp_data;

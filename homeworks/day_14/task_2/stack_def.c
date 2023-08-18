@@ -1,4 +1,4 @@
-#include "single_link.h"
+#include "stack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,13 +100,20 @@ void push_front(data *new_element, linked_list *ll)
     }
 
     new_head->cur_data = new_element;
+
+    new_head->previous = NULL;
     new_head->next = ll->head;
-    ll->head = new_head;
 
     if (ll->tail == NULL)
     {
         ll->tail = new_head;
     }
+    else
+    {
+        ll->head->previous = new_head;
+    }
+
+    ll->head = new_head;
 }
 
 data *pop_front(linked_list *ll)
@@ -127,6 +134,10 @@ data *pop_front(linked_list *ll)
     {
         ll->tail = NULL;
     }
+    else
+    {
+        ll->head->previous = NULL;
+    }
 
     return temp_data;
 }
@@ -141,9 +152,11 @@ void push_back(data *new_element, linked_list *ll)
     }
 
     new_tail->cur_data = new_element;
-    new_tail->next = NULL;
 
-    if (ll->head == NULL || ll->tail == NULL)
+    new_tail->next = NULL;
+    new_tail->previous = ll->tail;
+
+    if (ll->head == NULL)
     {
         ll->head = new_tail;
     }
@@ -165,11 +178,7 @@ data *pop_back(linked_list *ll)
 
     data *temp_data = ll->tail->cur_data;
 
-    node *second_to_last_node = ll->head;
-    while (second_to_last_node->next != ll->tail && second_to_last_node != NULL)
-    {
-        second_to_last_node = second_to_last_node->next;
-    }
+    node *second_to_last_node = ll->tail->previous;
     free(ll->tail);
     ll->tail = second_to_last_node;
 

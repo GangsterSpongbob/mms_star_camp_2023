@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "double_link.h"
+#include "stack.h"
 
 int main(void)
 {

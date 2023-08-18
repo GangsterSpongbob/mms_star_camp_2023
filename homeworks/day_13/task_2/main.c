@@ -29,16 +29,12 @@ int main(void)
     linked_list book_list = init_list();
     for (size_t i = 0; i < BOOK_ARR_COUNT; i++)
     {
-        data new_data = create_data(&(b_arr[i]));
-        push_front(&new_data, &book_list);
-    }
-
-    for (size_t i = 0; i < BOOK_ARR_COUNT; i++)
-    {
-        print_data(pop_front(&book_list));
+        push_back(b_arr[i], &book_list);
     }
 
     print_linked_list(&book_list);
+
+    deinit_list(&book_list);
 
     return 0;
 }

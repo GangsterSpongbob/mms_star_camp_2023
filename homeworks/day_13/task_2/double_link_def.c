@@ -3,10 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void print_data(data *cur_data)
+void print_data(node *cur_node)
 {
-    print_book(*(book *)cur_data->value);
+    print_book(cur_node->cur_data);
 }
 
 void print_linked_list(linked_list *ll)
@@ -20,7 +21,7 @@ void print_linked_list(linked_list *ll)
     node *current_node = ll->head;
     do
     {
-        print_data(current_node->cur_data);
+        print_data(current_node);
         current_node = current_node->next;
     } while (current_node != NULL);
 
@@ -44,14 +45,23 @@ void deinit_list(linked_list *ll)
     }
 }
 
-data create_data(void *val)
-{
-    data new_data = {val};
+// data create_data(void *val, size_t size)
+// {
+//     data new_data;
+//     new_data.value = malloc(size);
+//     if (new_data.value == NULL)
+//     {
+//         perror("Error druing memory allocation\n");
+//         exit(-1);
+//     }
 
-    return new_data;
-}
+//     new_data.size = size;
+//     memcpy(new_data.value, val, size);
 
-void push_front(data *new_element, linked_list *ll)
+//     return new_data;
+// }
+
+void push_front(book new_book, linked_list *ll)
 {
     node *new_head = malloc(sizeof(node));
     if (new_head == NULL)
@@ -60,7 +70,7 @@ void push_front(data *new_element, linked_list *ll)
         exit(-1);
     }
 
-    new_head->cur_data = new_element;
+    new_head->cur_data = new_book;
 
     new_head->previous = NULL;
     new_head->next = ll->head;
@@ -77,7 +87,7 @@ void push_front(data *new_element, linked_list *ll)
     ll->head = new_head;
 }
 
-data *pop_front(linked_list *ll)
+book pop_front(linked_list *ll)
 {
     if (ll->head == NULL)
     {
@@ -85,7 +95,7 @@ data *pop_front(linked_list *ll)
         exit(-1);
     }
 
-    data *temp_data = ll->head->cur_data;
+    book temp_book = ll->head->cur_data;
 
     node *second_node = ll->head->next;
     free(ll->head);
@@ -96,10 +106,10 @@ data *pop_front(linked_list *ll)
         ll->tail = NULL;
     }
 
-    return temp_data;
+    return temp_book;
 }
 
-void push_back(data *new_element, linked_list *ll)
+void push_back(book new_element, linked_list *ll)
 {
     node *new_tail = malloc(sizeof(node));
     if (new_tail == NULL)
@@ -125,7 +135,7 @@ void push_back(data *new_element, linked_list *ll)
     ll->tail = new_tail;
 }
 
-data *pop_back(linked_list *ll)
+book pop_back(linked_list *ll)
 {
     if (ll->head == NULL)
     {
@@ -133,7 +143,7 @@ data *pop_back(linked_list *ll)
         exit(-1);
     }
 
-    data *temp_data = ll->tail->cur_data;
+    book temp_book = ll->tail->cur_data;
     node *second_to_last_node = ll->tail->previous;
     free(ll->tail);
     ll->tail = second_to_last_node;
@@ -143,5 +153,5 @@ data *pop_back(linked_list *ll)
         ll->tail = NULL;
     }
 
-    return temp_data;
+    return temp_book;
 }
